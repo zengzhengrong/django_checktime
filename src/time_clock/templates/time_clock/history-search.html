@@ -1,0 +1,15 @@
+<form class="form-inline justify-content-center" style="margin-bottom: 1rem;" method="get">
+    <input class="form-control mr-sm-2" name="datetime" style="width: 50%;"type="search" placeholder="格式：年-月-日" aria-label="Search" value="{{ request.GET.datetime }}">
+    <button class="btn btn-outline-success btn-sm my-2 my-sm-0"style="margin-left: 0.3rem;" type="submit">Search</button>
+    <div class="btn-group" style="padding-left: 0.5rem;"role="group">
+        <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle btn-sm float-right" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {{ history_type }}
+        </button>
+        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+          <a class="dropdown-item" href="{% url 'time_clock:history' %}">全部</a>
+          {% for datetype,value in history_type_dict.items %}
+          <a class="dropdown-item" href="{% url 'time_clock:history-type' datetype %}">{{ value }}</a>
+          {% endfor %}
+        </div>
+    </div>
+</form>

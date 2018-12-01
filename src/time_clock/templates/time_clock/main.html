@@ -1,0 +1,27 @@
+<h1 class="cover-heading">User Activity.</h1>
+<p class="lead">当前状态:
+    {% if recent_obj != None %}
+    已{{ recent_obj.current_activity_display }}
+    {% else %}
+    无记录
+    {% endif %}
+ </p>
+ <p class="lead">更新于:
+        {% if recent_obj != None %}
+        {{ recent_obj.timestamp }}
+        {% else %}
+        无记录
+        {% endif %}
+     </p>
+<form method="post" action="">
+{% csrf_token %}
+<p class="lead">
+    {% if recent_obj != None %}
+    <input class="btn btn-lg btn-secondary" type="submit" value="{{ recent_obj.next_activity }}">
+    {% elif request.user.is_authenticated == False %}
+    <a class="btn btn-lg btn-secondary" href="{% url 'user:login' %}">请先登陆</a>
+    {% else %}
+    <input class="btn btn-lg btn-secondary" type="submit" value="签到">
+    {% endif %}
+</p>
+</form>

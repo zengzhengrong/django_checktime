@@ -1,0 +1,33 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<!-- saved from url=(0048)https://v4.bootcss.com/docs/4.0/examples/cover/# -->
+<html lang="zh-cn"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="https://v4.bootcss.com/favicon.ico">
+
+    <title>{% block title %}{% endblock %}</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'time_clock/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'time_clock/css/cover.css' %}" rel="stylesheet">
+  </head>
+
+  <body class="text-center">
+    {% block content %}
+
+    {% endblock %}
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{% static 'time_clock/js/jquery-3.2.1.slim.min.js' %}" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="{% static 'time_clock/js/popper.min.js' %}"></script>
+    <script src="{% static 'time_clock/js/bootstrap.min.js' %}"></script>
+  
+
+</body>
+</html>

@@ -1,0 +1,22 @@
+{% extends 'time_clock/base.html' %}
+
+{% block title %}
+{{ title }}
+{% endblock %}
+
+{% block content %}
+<div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+        <header class="masthead mb-auto">
+            {% include 'time_clock/menu.html'%}
+        </header>
+        
+        <main role="main" class="inner cover">
+            {% include 'time_clock/messages.html'%}
+            {% include 'time_clock/main.html'%}
+        </main>
+  
+        <footer class="mastfoot mt-auto">
+            {% include 'time_clock/footer.html'%}
+        </footer>
+ </div>
+{% endblock %}
