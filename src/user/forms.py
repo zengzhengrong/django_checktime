@@ -13,17 +13,18 @@ class LoginForm(forms.Form):
         username = cleaned_data.get('username','')
         password = cleaned_data.get('password','')
         exist_user = User.objects.filter(username__iexact=username)
-        meassge = '账号或者密码错误'
+        message = '账号或者密码错误'
         # 不存在这个用户
         if not exist_user.exists() or exist_user.count() != 1:
-            raise forms.ValidationError(meassge,code='invalid')
+            raise forms.ValidationError(message,code='invalid')
         # 存在这个用户但密码错误
         if exist_user.exists() and exist_user.count()==1:
             user = exist_user.first()
             check_password = user.check_password(password)
             if not check_password :
-                raise forms.ValidationError(meassge,code='invalid')
+                raise forms.ValidationError(message,code='invalid')
         return cleaned_data
+
 class SignupForm(UserCreationForm):
     username = forms.CharField(
         label='账号',

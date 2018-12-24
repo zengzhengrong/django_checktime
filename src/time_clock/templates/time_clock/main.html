@@ -16,6 +16,12 @@
 <form method="post" action="">
 {% csrf_token %}
 <p class="lead">
+    {% if form %}
+    {% for field in form %}
+    {{ field }}
+    {% endfor %}
+    {% endif %}
+    <p class="text-danger">{{ form.non_field_errors.as_text }}</p>
     {% if recent_obj != None %}
     <input class="btn btn-lg btn-secondary" type="submit" value="{{ recent_obj.next_activity }}">
     {% elif request.user.is_authenticated == False %}

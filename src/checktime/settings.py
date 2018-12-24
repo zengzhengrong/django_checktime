@@ -124,17 +124,13 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_collected')
 
-# CRISPY_FORMS
+SITE_ID=1
+# CRISPY_FORMS 样式
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
-
-# LOGOUT_REDIRECT_URL = 'user:login'
-
 # 设定默认延时:单位分钟,不填默认1分钟
 TIME_DELTA_MIN = 1
 # 登陆url
 LOGIN_URL = 'user:login'
-
-SITE_ID=1
 
 # 需要登陆访问的页面urlname:列表
 NEXT_URLNAMES = ['time_clock:history','time_clock:index']
@@ -142,5 +138,14 @@ NEXT_URLNAMES = ['time_clock:history','time_clock:index']
 # 签出需要延迟,默认True
 PASS_CHECKIN = True
 
-# 今日签出后是否再签到,默认False
-CHECK_IN_TODAY = True
+# 今日只允许一次签入和签到,默认False
+CHECK_IN_TODAY = False
+
+# 签入签出需要密码验证,dict or bool
+# bool True表示使用密码验证 False则不使用
+# dict {'checkin':True,'checkout':False}表示签入需要，签出不需要
+CHECK_REQUIRED_PASSWORD = True
+
+# 当个分页的显示数量，默认8，范围1-10,且是2的倍数
+
+PER_PAGE_NUMBER = 8

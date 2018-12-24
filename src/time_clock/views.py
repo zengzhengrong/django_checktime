@@ -6,28 +6,32 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from .models import UserActivity,UserActivityManager
 from django.urls import reverse
-from django.conf import settings
 from .models import UserActivity
 from django.views.generic.list import ListView
 from .utils import current_page_round
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import redirect_to_login
 from django.db.models.query_utils import Q
-
+from django.conf import settings
+from .forms import CheckRequired_PwForm
+from .utils import check_required_password
 # from django.contrib.auth.decorators import login_required
 # from django.http import HttpResponseRedirect
 # from django.utils import timezone
 # from datetime import timedelta,time
 # Create your views here.
-Users = get_user_model()
+PER_PAGE_NUMBER = getattr(settings,'PER_PAGE_NUMBER',8)
 class UserActivity_View(View):
     def get(self,request,*args,**kwargs):
+        # print(request.method)
         context = {}
         recent_obj = None
         if request.user.is_authenticated:
             recent_obj = UserActivity.objects.current(user=request.user)
+            context['form'] = check_required_password(request,context,CheckRequired_PwForm,recent_obj=recent_obj)
         context['recent_obj'] = recent_obj
         context['title'] = '打卡'
+        
         return render(request,'time_clock/index.html',context)
 
     def post(self,request,*args,**kwargs):
@@ -37,15 +41,18 @@ class UserActivity_View(View):
         2.不使用延迟
         UserActivity.objects.toggle(request.user)
         '''
+        context = {}
+        if check_required_password(request,context,CheckRequired_PwForm):
+            return render(request, 'time_clock/index.html',check_required_password(request,context,CheckRequired_PwForm))
+
         if request.user.is_authenticated:
-            # if UserActivity.objects.today(user=request.user).first().activity == 'checkout':
-            #     messages.error(request,'You have been checked out in this day')
-            #     return redirect('time_clock:index')
             result = UserActivity.objects.checkout_dely_toggle(user=request.user)
             
             # print(result)
             if isinstance(result,str):
                 messages.error(request,result)
+            if isinstance(result,UserActivity):
+                messages.success(request,'You Success ' + result.activity.upper())
         return redirect('time_clock:index')
 
 class UserActivity_ListView(LoginRequiredMixin,ListView):
@@ -53,7 +60,7 @@ class UserActivity_ListView(LoginRequiredMixin,ListView):
     template_name = 'time_clock/history.html'
     # model = UserActivity
     context_object_name = 'user_activity_list'
-    paginate_by = 8
+    paginate_by = PER_PAGE_NUMBER if PER_PAGE_NUMBER <= 10 and PER_PAGE_NUMBER % 2 == 0  else 10
     history_type = None
     q = None
     def dispatch(self, request, *args, **kwargs):

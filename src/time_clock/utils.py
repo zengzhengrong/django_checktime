@@ -1,3 +1,65 @@
+from django.conf import settings
+
+CHECK_REQUIRED_PASSWORD = getattr(settings,'CHECK_REQUIRED_PASSWORD',False)
+def check_password_form_get(request,context,form):
+    return form(initial={'username':request.user})
+
+def check_password_form_post(request,context,form):
+    if len(request.POST) == 1:
+        return None
+    form = form(request.POST)
+    if not form.is_valid():
+        # 验证不通过，渲染同样模版
+        context['title'] = '打卡'
+        context['form'] = form
+        return context
+    return None
+
+def check_password_form(request,context,form):
+    if request.method == 'GET':
+        return check_password_form_get(request,context,form)
+    if request.method == 'POST':
+        return check_password_form_post(request,context,form)
+    raise TypeError('http method is not get or post')
+
+def check_required_password(request,context,form,recent_obj=None):
+    # bool类型
+    if isinstance(CHECK_REQUIRED_PASSWORD,bool):
+        if CHECK_REQUIRED_PASSWORD:
+            return check_password_form(request,context,form)
+        return None
+
+    # dict类型
+    if isinstance(CHECK_REQUIRED_PASSWORD,dict):
+
+        checkin_required = CHECK_REQUIRED_PASSWORD.get('checkin')
+        checkout_required = CHECK_REQUIRED_PASSWORD.get('checkout')
+        
+        # 两个都是True 或者 False
+        if checkin_required and checkout_required:
+            return check_password_form(request,context,form)
+
+        if checkin_required==False and checkout_required==False:
+            return None
+        # 其中一个True另一个是False
+        if checkin_required or checkout_required:
+            if checkin_required and request.method == 'GET':
+                if recent_obj is None:
+                    return check_password_form_get(request,context,form)
+                if recent_obj.activity == 'checkout':
+                    return check_password_form_get(request,context,form)
+            if checkout_required and request.method == 'GET':
+                if recent_obj.activity == 'checkin':
+                    return check_password_form_get(request,context,form)
+            
+            if checkin_required and request.method == 'POST':
+                return check_password_form_post(request,context,form)   
+            if checkout_required and request.method == 'POST':
+                return check_password_form_post(request,context,form)
+
+            return None
+    raise TypeError('http method error')
+    
 def current_page_round(page_obj):
     '''
     1.当前页面的附近页
